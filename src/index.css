@@ -42,14 +42,8 @@ body {
 .list-item {
   display: inline-block;
   padding: 1em;
-  height:33.3333%;
-  width:33.3333%;
+  /* height:33.3333%;
+  width:33.3333%; */
   border:1px solid #cccccc
 }
 
-.list-item > div:nth-child(2) {
-  font-family: sans-serif;
-  font-size: large;
-  width: 200px;
-  margin-top: 0.5em;
-}

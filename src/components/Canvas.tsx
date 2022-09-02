@@ -5,6 +5,10 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import Metal from './Metal'
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js'
 import Noise from './Noise'
+import PointWave from './PointWave'
+
+const sceneCountH = 3
+const sceneCountV = 3
 
 const rtParameters = {
   stencilBuffer: true
@@ -24,35 +28,40 @@ export default function Canvas() {
     let renderer: WebGLRenderer
     if (!rendererRef.current) {
       renderer = new THREE.WebGLRenderer({
-        canvas: canvas,
-        antialias: true
+        canvas: canvas
       })
       rendererRef.current = renderer
     } else {
       renderer = rendererRef.current
     }
     function init() {
-      const geometries = [new THREE.BoxGeometry(2, 2, 2)]
+      // const geometries = [new THREE.BoxGeometry(2, 2, 2)]
 
       setScenes([])
       content.innerHTML = ''
       const sceneTemp = []
-      for (let i = 0; i < 9; i++) {
+      for (let i = 0; i < sceneCountH * sceneCountV; i++) {
         const scene = new THREE.Scene()
 
         // make a list item
         const element = document.createElement('div')
         element.className = 'list-item'
+        element.style.width = `${100 / sceneCountH}%`
+        element.style.height = `${100 / sceneCountV}%`
 
         const descriptionElement = document.createElement('div')
         descriptionElement.innerText = 'Scene ' + (i + 1)
         element.appendChild(descriptionElement)
 
-        // the element that represents the area we want to render the scene
         scene.userData.element = element
         content!.appendChild(element)
 
-        const camera = new THREE.PerspectiveCamera(50, 1, 1, 10)
+        const camera = new THREE.PerspectiveCamera(
+          50,
+          window.innerHeight / window.innerWidth,
+          1,
+          50
+        )
         camera.position.z = 10
         scene.userData.camera = camera
 
@@ -61,37 +70,37 @@ export default function Canvas() {
           scene.userData.element
         )
         controls.minDistance = 2
-        controls.maxDistance = 5
+        controls.maxDistance = 20
         controls.enablePan = false
+        controls.enableRotate = true
         // controls.enableZoom = false
         scene.userData.controls = controls
 
         // add one random mesh to each scene
-        const geometry = geometries[(geometries.length * Math.random()) | 0]
+        // const geometry = geometries[(geometries.length * Math.random()) | 0]
 
-        const material = new THREE.PointsMaterial({
-          color: new THREE.Color().setHSL(Math.random(), 1, 0.75)
-          // roughness: 0.5,
-          // metalness: 0,
-          // flatShading: true
-        })
+        // const material = new THREE.PointsMaterial({
+        //   color: new THREE.Color().setHSL(Math.random(), 1, 0.75)
+        //   // roughness: 0.5,
+        //   // metalness: 0,
+        //   // flatShading: true
+        // })
 
-        scene.add(new THREE.Mesh(geometry, material))
+        // scene.add(new THREE.Mesh(geometry, material))
 
         const composer = new EffectComposer(
           renderer,
           new THREE.WebGLRenderTarget(
-            window.innerWidth / 3,
-            window.innerHeight / 3,
+            window.innerWidth / sceneCountH,
+            window.innerHeight / sceneCountV,
             rtParameters
           )
         )
         scene.userData.composer = composer
-
+        scene.background = new THREE.Color('#ffffff')
         sceneTemp.push(scene)
       }
       setScenes([...sceneTemp])
-      renderer.setClearColor(0x00ffff, 1)
       renderer.setPixelRatio(window.devicePixelRatio)
       clock.start()
     }
@@ -126,7 +135,7 @@ export default function Canvas() {
 
     scenes.forEach(function (scene) {
       // so something moves
-      scene.children[0].rotation.y = Date.now() * 0.001
+      // scene.children[0].rotation.y = Date.now() * 0.001
 
       // get the element that is a place holder for where we want to
       // draw the scene
@@ -173,11 +182,6 @@ export default function Canvas() {
           pass.uniforms.iTime.value = clock.getElapsedTime()
         }
       }
-      // scene?.userData?.composer?.passes?.foreach((pass: any) => {
-      //   if (pass.uniforms && 'iTime' in pass.uniforms) {
-      //     pass.uniforms.iTime.value = clock.elapsedTime
-      //   }
-      // })
       scene.userData.composer.render()
     })
   }, [scenes, updateSize])
@@ -197,6 +201,7 @@ export default function Canvas() {
       <div id="content" />
       {scenes[0] && <Metal scene={scenes[0]} />}
       {scenes[1] && <Noise scene={scenes[1]} />}
+      {scenes[2] && <PointWave scene={scenes[2]} />}
     </>
   )
 }

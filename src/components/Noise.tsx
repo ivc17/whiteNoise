@@ -1,5 +1,5 @@
 import { Scene } from 'three'
-import BaseBlock from './BaseBlock'
+import BaseBlock from './BaseShaderBlock'
 import { NoiseShader } from '../shaders/noise/noiseShader'
 
 export default function Noise({ scene }: { scene?: Scene }) {
