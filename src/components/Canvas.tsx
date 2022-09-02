@@ -6,9 +6,10 @@ import Metal from './Metal'
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js'
 import Noise from './Noise'
 import PointWave from './PointWave'
+import Terrain from './Terrain'
 
 const sceneCountH = 3
-const sceneCountV = 3
+const sceneCountV = 2
 
 const rtParameters = {
   stencilBuffer: true
@@ -35,8 +36,6 @@ export default function Canvas() {
       renderer = rendererRef.current
     }
     function init() {
-      // const geometries = [new THREE.BoxGeometry(2, 2, 2)]
-
       setScenes([])
       content.innerHTML = ''
       const sceneTemp = []
@@ -64,29 +63,6 @@ export default function Canvas() {
         )
         camera.position.z = 10
         scene.userData.camera = camera
-
-        const controls = new OrbitControls(
-          scene.userData.camera,
-          scene.userData.element
-        )
-        controls.minDistance = 2
-        controls.maxDistance = 20
-        controls.enablePan = false
-        controls.enableRotate = true
-        // controls.enableZoom = false
-        scene.userData.controls = controls
-
-        // add one random mesh to each scene
-        // const geometry = geometries[(geometries.length * Math.random()) | 0]
-
-        // const material = new THREE.PointsMaterial({
-        //   color: new THREE.Color().setHSL(Math.random(), 1, 0.75)
-        //   // roughness: 0.5,
-        //   // metalness: 0,
-        //   // flatShading: true
-        // })
-
-        // scene.add(new THREE.Mesh(geometry, material))
 
         const composer = new EffectComposer(
           renderer,
@@ -202,6 +178,7 @@ export default function Canvas() {
       {scenes[0] && <Metal scene={scenes[0]} />}
       {scenes[1] && <Noise scene={scenes[1]} />}
       {scenes[2] && <PointWave scene={scenes[2]} />}
+      {scenes[3] && <Terrain scene={scenes[3]} />}
     </>
   )
 }

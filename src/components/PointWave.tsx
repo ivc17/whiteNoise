@@ -12,14 +12,13 @@ import { PointWaveShader } from '../shaders/pointWave/pointWaveShader'
 import { cleanUpScene } from '../utils/cleanUpScene'
 import { clock } from './Canvas'
 
-const count = 80
+const count = 100
 const width = 20
 const f = 1
 const a = 0.5
 
 export default function PointWave({ scene }: { scene?: Scene }) {
   const positionsRef = useRef<BufferAttribute | InterleavedBufferAttribute>()
-  const t = useRef(0)
 
   const graph = useCallback((x: number, z: number) => {
     const customT = clock.getElapsedTime()
@@ -72,7 +71,6 @@ export default function PointWave({ scene }: { scene?: Scene }) {
         }
       }
       positionsAttr.needsUpdate = true
-      t.current += 15
     }
     const animate = () => {
       requestAnimationFrame(animate)

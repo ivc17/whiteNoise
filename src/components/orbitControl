@@ -1,0 +1,10 @@
+// export const controls = new OrbitControls(
+//   scene.userData.camera,
+//   scene.userData.element
+// )
+// controls.minDistance = 2
+// controls.maxDistance = 20
+// controls.enablePan = false
+// controls.enableRotate = true
+// // controls.enableZoom = false
+// scene.userData.controls = controls
