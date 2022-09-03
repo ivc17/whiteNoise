@@ -6,10 +6,13 @@ import Metal from './Metal'
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js'
 import Noise from './Noise'
 import PointWave from './PointWave'
+import TerrainMarble from './TerrainMarble'
 import Terrain from './Terrain'
+import Twist from './Twist'
+import TwistText from './TwistText'
 
 const sceneCountH = 3
-const sceneCountV = 2
+const sceneCountV = 3
 
 const rtParameters = {
   stencilBuffer: true
@@ -63,6 +66,17 @@ export default function Canvas() {
         )
         camera.position.z = 10
         scene.userData.camera = camera
+
+        const controls = new OrbitControls(
+          scene.userData.camera,
+          scene.userData.element
+        )
+        controls.minDistance = 2
+        controls.maxDistance = 20
+        controls.enablePan = false
+        controls.enableRotate = true
+        // controls.enableZoom = false
+        scene.userData.controls = controls
 
         const composer = new EffectComposer(
           renderer,
@@ -141,8 +155,8 @@ export default function Canvas() {
 
       const camera = scene.userData.camera
 
-      // camera.aspect = width / height // not changing in this example
-      //camera.updateProjectionMatrix();
+      camera.aspect = width / height // not changing in this example
+      camera.updateProjectionMatrix()
 
       //scene.userData.controls.update();
 
@@ -178,7 +192,10 @@ export default function Canvas() {
       {scenes[0] && <Metal scene={scenes[0]} />}
       {scenes[1] && <Noise scene={scenes[1]} />}
       {scenes[2] && <PointWave scene={scenes[2]} />}
-      {scenes[3] && <Terrain scene={scenes[3]} />}
+      {scenes[3] && <TerrainMarble scene={scenes[3]} />}
+      {scenes[4] && <Terrain scene={scenes[4]} />}
+      {scenes[5] && <Twist scene={scenes[5]} />}
+      {scenes[6] && <TwistText scene={scenes[6]} />}
     </>
   )
 }

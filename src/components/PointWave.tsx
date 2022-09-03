@@ -9,11 +9,11 @@ import {
   ShaderMaterial
 } from 'three'
 import { PointWaveShader } from '../shaders/pointWave/pointWaveShader'
-import { cleanUpScene } from '../utils/cleanUpScene'
+import BaseSceneBlock from './BaseSceneBlock'
 import { clock } from './Canvas'
 
 const count = 100
-const width = 20
+const width = 30
 const f = 1
 const a = 0.5
 
@@ -50,10 +50,6 @@ export default function PointWave({ scene }: { scene?: Scene }) {
       mesh.scale.set(0.7, 0.7, 0.7)
       scene.add(mesh)
     }
-
-    return () => {
-      cleanUpScene(scene)
-    }
   }, [graph, scene])
 
   useEffect(() => {
@@ -80,5 +76,5 @@ export default function PointWave({ scene }: { scene?: Scene }) {
     animate()
   }, [graph])
 
-  return <></>
+  return <BaseSceneBlock scene={scene}></BaseSceneBlock>
 }

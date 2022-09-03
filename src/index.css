@@ -47,3 +47,10 @@ body {
   border:1px solid #cccccc
 }
 
+@font-face {
+  font-family: 'Orbitron';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Orbitron'), url('./assets/font/Orbitron-Black.fnt');
+}
