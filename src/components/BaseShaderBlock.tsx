@@ -26,6 +26,9 @@ export default function BaseShaderBlock({
     }
     return () => {
       cleanUpComposer(scene?.userData.composer)
+      if (scene) {
+        scene.userData.element.innerHTML = ''
+      }
     }
   }, [scene, shader])
 

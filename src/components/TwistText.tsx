@@ -37,7 +37,7 @@ export default function TwistText({ scene }: { scene: Scene }) {
     if (context) {
       context.strokeStyle = '#FFFFFF'
       context.lineWidth = 2
-      context.font = '100px Orbitron'
+      context.font = '100px Times'
 
       for (let i = 0; i < 10; i++) {
         context.strokeText(str, 0, i * 100, 2000)

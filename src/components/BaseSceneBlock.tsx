@@ -12,6 +12,9 @@ export default function BaseSceneBlock({
   useEffect(() => {
     return () => {
       cleanUpScene(scene)
+      if (scene) {
+        scene.userData.element.innerHTML = ''
+      }
     }
   }, [scene])
 

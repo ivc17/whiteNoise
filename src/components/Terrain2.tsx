@@ -1,9 +1,7 @@
 import { useEffect } from 'react'
 import {
   Color,
-  CubeTextureLoader,
   DoubleSide,
-  Fog,
   HemisphereLight,
   Mesh,
   MeshPhongMaterial,
@@ -18,7 +16,6 @@ import BaseSceneBlock from './BaseSceneBlock'
 import displacementUrl from '../assets/displacement.png'
 import alphaUrl from '../assets/alphamap.png'
 import normalUrl from '../assets/normalmap.jpeg'
-import textureUrl from '../assets/rock.jpeg'
 import { clock } from './Canvas'
 
 const count = 70
@@ -31,14 +28,9 @@ export default function Terrain2({ scene }: { scene: Scene }) {
     // scene.fog = fog
     const mesh = new Mesh()
     const geometry = new PlaneGeometry(width, width, count, count)
-    const textureMap = new TextureLoader().load(textureUrl)
     const normalMap = new TextureLoader().load(normalUrl)
     const alphaMap = new TextureLoader().load(alphaUrl)
     const displacementMap = new TextureLoader().load(displacementUrl)
-    // const reflectionCube = new CubeTextureLoader()
-    //   .setPath('./textures/')
-    //   .load(['negz', 'negy', 'negx', 'posz', 'posy', 'posx'])
-    // // load([mapUrl, mapUrl, mapUrl, mapUrl, mapUrl, mapUrl])
 
     normalMap.wrapS = RepeatWrapping
     normalMap.wrapT = RepeatWrapping
@@ -62,7 +54,6 @@ export default function Terrain2({ scene }: { scene: Scene }) {
     terrainMaterial.side = DoubleSide
     mesh.material = terrainMaterial
     mesh.geometry = geometry
-    // mesh.position.z = 0
 
     camera.far = 100
     camera.position.y = 20

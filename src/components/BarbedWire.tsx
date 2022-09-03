@@ -1,75 +1,95 @@
 import { useEffect } from 'react'
 import {
-  BoxGeometry,
+  AmbientLight,
   BufferGeometry,
   CatmullRomCurve3,
   Color,
-  LineBasicMaterial,
-  LineLoop,
+  CubeTextureLoader,
   Mesh,
-  MeshBasicMaterial,
-  Scene
+  MeshPhysicalMaterial,
+  Scene,
+  Vector3
 } from 'three'
+import * as BufferGeometryUtils from 'three/examples/jsm/utils/BufferGeometryUtils'
 import BaseSceneBlock from './BaseSceneBlock'
 import { Flow } from 'three/examples/jsm/modifiers/CurveModifier.js'
+import { GLTF, GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
+import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader'
+const dracoLoader = new DRACOLoader()
+dracoLoader.setDecoderPath('/draco/')
+
+const reflectionCube = new CubeTextureLoader()
+  .setPath('./textures/')
+  .load(['negz', 'negy', 'negx', 'posz', 'posy', 'posx'])
 
 export default function BarbedWire({ scene }: { scene: Scene }) {
   useEffect(() => {
     const camera = scene.userData.camera
-    const curveHandles: any = []
 
-    const initialPoints = [
-      { x: 1, y: 0, z: -1 },
-      { x: 1, y: 0, z: 1 },
-      { x: -1, y: 0, z: 1 },
-      { x: -1, y: 0, z: -1 }
-    ]
+    const init = (gltf: GLTF) => {
+      const initialPoints = [
+        [-3, 6, -1],
+        [5, -1, 5],
+        [-3, -1, 3],
+        [-7, 5, -2],
+        [-4, 0, -8],
+        [8, 8, 0],
+        [2, -5, 1]
+      ]
 
-    const boxGeometry = new BoxGeometry(0.1, 0.1, 0.1)
-    const boxMaterial = new MeshBasicMaterial({ color: new Color(0xff00ff) })
+      const curve: any = new CatmullRomCurve3(
+        initialPoints.map((point: any) => new Vector3(...point))
+      )
+      curve.curveType = 'centripetal'
+      curve.closed = true
 
-    for (const handlePos of initialPoints) {
-      const handle = new Mesh(boxGeometry, boxMaterial)
-      handle.position.copy(handlePos as any)
-      curveHandles.push(handle)
-      scene.add(handle)
+      // const points = curve.getPoints(50)
+      // const line = new LineLoop(
+      //   new BufferGeometry().setFromPoints(points),
+      //   new LineBasicMaterial({ color: 0x00ff00 })
+      // )
+      // scene.add(line)
+
+      const wireGeometry = (gltf.scene.children[0] as any)
+        .geometry as BufferGeometry
+      wireGeometry.center()
+      wireGeometry.scale(0.003, 0.003, 0.003)
+
+      const list = []
+      for (let i = 0; i < 60; i++) {
+        list.push(wireGeometry.clone().translate(1.7 * i, 0, 0))
+      }
+
+      const geometry = BufferGeometryUtils.mergeBufferGeometries(list)
+      const mesh = new Mesh(
+        geometry,
+        new MeshPhysicalMaterial({
+          color: new Color(0xcccccc),
+          metalness: 0.8,
+          envMap: reflectionCube,
+          envMapIntensity: 0.5
+        })
+      )
+
+      // mesh.scale.set(0.01, 0.01, 0.01)
+      camera.lookAt(mesh.position)
+
+      const flow = new Flow(mesh)
+      flow.updateCurve(0, curve)
+      scene.add(flow.object3D)
+      scene.add(new AmbientLight('#ffffff'))
+
+      const animate = () => {
+        flow.moveAlongCurve(0.0001)
+        requestAnimationFrame(animate)
+      }
+      animate()
     }
 
-    const curve: any = new CatmullRomCurve3(
-      curveHandles.map((handle: any) => handle.position)
-    )
-    curve.curveType = 'centripetal'
-    curve.closed = true
+    const loader = new GLTFLoader()
+    loader.setDRACOLoader(dracoLoader)
 
-    const points = curve.getPoints(50)
-    const line = new LineLoop(
-      new BufferGeometry().setFromPoints(points),
-      new LineBasicMaterial({ color: 0x00ff00 })
-    )
-
-    scene.add(line)
-
-    const geometry = new BoxGeometry(5, 1, 1, 20)
-    geometry.center()
-
-    geometry.rotateX(Math.PI)
-
-    const mesh = new Mesh(
-      geometry,
-      new MeshBasicMaterial({ color: new Color(0x00ff00) })
-    )
-
-    camera.lookAt(mesh.position)
-
-    const flow = new Flow(mesh)
-    flow.updateCurve(0, curve)
-    scene.add(flow.object3D)
-
-    const animate = () => {
-      flow.moveAlongCurve(0.001)
-      requestAnimationFrame(animate)
-    }
-    animate()
+    loader.load('./models/wire.gltf', init)
   }, [scene])
 
   return <BaseSceneBlock scene={scene}></BaseSceneBlock>
