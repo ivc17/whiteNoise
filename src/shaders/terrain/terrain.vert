@@ -168,7 +168,6 @@ float pnoise(vec3 P, vec3 rep) {
 
 varying vec2 vUv;
 varying float noise;
-uniform float time;
 uniform float iTime;
 
 float turbulence(vec3 p) {
@@ -185,17 +184,19 @@ float turbulence(vec3 p) {
 
 void main() {
   vUv = uv;
-
+  float time = iTime / 50.;
   // add time to the noise parameters so it's animated
-  noise = 10.0 * -.10 * turbulence(.5 * normal + iTime);
-  float b = 5.0 * pnoise(0.05 * position + vec3(2.0 * iTime), vec3(100.0));
-  float displacement = -noise + b;
+  noise = 10.0 * -.10 * turbulence(.5 * normal + time);
+  float b = 5.0 * pnoise(0.05 * position + vec3(2.0 * time), vec3(100.0));
+  float displacement = -8. * noise + b;
 
   vec3 newPosition = position + normal * displacement;
-  // gl_Position = projectionMatrix * modelViewMatrix * vec4(newPosition, 1.0);
-  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+  // gl_Position = projectionMatrix * modelViewMatrix *
+  vec4(newPosition, 1.0);
+  gl_Position = projectionMatrix * modelViewMatrix * vec4(newPosition, 1.0);
 }
 
 //  "#ifdef USE_DISPLACEMENTMAP\n\ttransformed += normalize( objectNormal ) * (
 //  texture2D( displacementMap, vUv ).x * displacementScale + displacementBias
-//  );\n#endif";
+//  );
+//  \n #endif ";
