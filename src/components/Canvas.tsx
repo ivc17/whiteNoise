@@ -76,7 +76,7 @@ export default function Canvas() {
         controls.maxDistance = 20
         controls.enablePan = false
         controls.enableRotate = true
-        // controls.enableZoom = false
+        controls.enableZoom = true
         scene.userData.controls = controls
 
         const composer = new EffectComposer(
