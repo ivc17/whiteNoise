@@ -19,18 +19,6 @@ export default function Twist({ scene }: { scene: Scene }) {
     const geometry = new CylinderGeometry(0.3, 1.5, 15, 3, 30)
     geometry.center()
 
-    // const reflectionCube = new CubeTextureLoader()
-    //   .setPath('./textures/')
-    //   .load(['negz', 'negy', 'negx', 'posz', 'posy', 'posx'])
-    // load([
-    //   mapUrl,
-    //   mapUrl,
-    //   mapUrl,
-    //   mapUrl,
-    //   mapUrl,
-    //   mapUrl
-    // ])
-
     let mesh = new Mesh(geometry, buildTwistMaterial(2.0))
     mesh.position.z = -3.5
     mesh.castShadow = true //default is false

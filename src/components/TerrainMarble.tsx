@@ -122,7 +122,11 @@ export default function TerrainMarble({ scene }: { scene: Scene }) {
         camera.position.z * Math.cos(speed) -
         camera.position.x * Math.sin(speed)
 
-      camera.position.y += Math.sin(speed * 1.5)
+      if (camera.position.y > 10) {
+        camera.position.y -= Math.sin(speed * 1.5)
+      } else {
+        camera.position.y += Math.sin(speed * 1.5)
+      }
       camera.lookAt(mesh.position)
     }
     const animate = () => {

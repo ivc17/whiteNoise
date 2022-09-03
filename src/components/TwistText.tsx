@@ -16,9 +16,7 @@ var str = `white_NOIOSE | white_Noise | white_Noise | White_Noise`
 export default function TwistText({ scene }: { scene: Scene }) {
   useEffect(() => {
     scene.add(new AmbientLight(0xcccccc))
-    const material = new MeshBasicMaterial({
-      color: '0xff00ff'
-    })
+    const material = new MeshBasicMaterial()
 
     const mesh = new Mesh(new TorusGeometry(5, 2, 30, 30), material)
     mesh.castShadow = true //default is false

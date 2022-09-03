@@ -10,6 +10,7 @@ import TerrainMarble from './TerrainMarble'
 import Terrain from './Terrain'
 import Twist from './Twist'
 import TwistText from './TwistText'
+import Terrain2 from './Terrain2'
 
 const sceneCountH = 3
 const sceneCountV = 3
@@ -196,6 +197,7 @@ export default function Canvas() {
       {scenes[4] && <Terrain scene={scenes[4]} />}
       {scenes[5] && <Twist scene={scenes[5]} />}
       {scenes[6] && <TwistText scene={scenes[6]} />}
+      {scenes[7] && <Terrain2 scene={scenes[7]} />}
     </>
   )
 }
