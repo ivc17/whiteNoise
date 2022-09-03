@@ -15,7 +15,7 @@ float gold_noise(in vec2 xy, in float seed) {
 void main() {
   gl_FragColor = vec4(gold_noise(vUv * vec2(1000.), fract(iTime) + 3.0),
                       gold_noise(vUv * vec2(1000.), fract(iTime) + 2.0),
-                      gold_noise(vUv * vec2(1000.), fract(iTime) + 1.0), 0.4);
+                      gold_noise(vUv * vec2(1000.), fract(iTime) + 1.0), 0.9);
 }
 
 // float strength = 16.0;

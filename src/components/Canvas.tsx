@@ -11,6 +11,7 @@ import Terrain from './Terrain'
 import Twist from './Twist'
 import TwistText from './TwistText'
 import Terrain2 from './Terrain2'
+import BarbedWire from './BarbedWire'
 
 const sceneCountH = 3
 const sceneCountV = 3
@@ -51,10 +52,6 @@ export default function Canvas() {
         element.className = 'list-item'
         element.style.width = `${100 / sceneCountH}%`
         element.style.height = `${100 / sceneCountV}%`
-
-        const descriptionElement = document.createElement('div')
-        descriptionElement.innerText = 'Scene ' + (i + 1)
-        element.appendChild(descriptionElement)
 
         scene.userData.element = element
         content!.appendChild(element)
@@ -198,6 +195,7 @@ export default function Canvas() {
       {scenes[5] && <Twist scene={scenes[5]} />}
       {scenes[6] && <TwistText scene={scenes[6]} />}
       {scenes[7] && <Terrain2 scene={scenes[7]} />}
+      {scenes[8] && <BarbedWire scene={scenes[8]} />}
     </>
   )
 }
