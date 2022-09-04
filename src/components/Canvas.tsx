@@ -82,6 +82,16 @@ const updateFnFactory = (screenNum: number, setOnDisplay: any) => {
   setTimeout(fn, MathUtils.randInt(7, 9) * 1000)
 }
 
+const mouseEnter = (e: MouseEvent) => {
+  const target = e.currentTarget as HTMLDivElement
+  target.classList.add('active')
+}
+
+const mouseLeave = (e: MouseEvent) => {
+  const target = e.currentTarget as HTMLDivElement
+  target.classList.remove('active')
+}
+
 export default function Canvas() {
   const rendererRef = useRef<WebGLRenderer>()
   const [scenes, setScenes] = useState<Scene[]>([])
@@ -133,6 +143,9 @@ export default function Canvas() {
         element.className = 'list-item'
         element.style.width = `${100 / sceneCountH}%`
         element.style.height = `${100 / sceneCountV}%`
+
+        element.addEventListener('mouseenter', mouseEnter)
+        element.addEventListener('mouseleave', mouseLeave)
 
         scene.userData.element = element
         content!.appendChild(element)
@@ -251,6 +264,13 @@ export default function Canvas() {
       }
       scene.userData.composer.render()
     })
+
+    return () => {
+      scenes.forEach((scene) => {
+        scene.userData.element.removeEventListener('mouseenter', mouseEnter)
+        scene.userData.element.removeEventListener('mouseleave', mouseEnter)
+      })
+    }
   }, [scenes])
 
   const animate = useCallback(() => {
