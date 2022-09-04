@@ -1,6 +1,6 @@
 import { ReactNode, useEffect } from 'react'
 import { Scene } from 'three'
-import { cleanUpScene } from '../utils/cleanUpScene'
+import { cleanaupAll } from '../utils/cleanupAll'
 
 export default function BaseSceneBlock({
   children,
@@ -10,11 +10,10 @@ export default function BaseSceneBlock({
   scene?: Scene
 }) {
   useEffect(() => {
+    cleanaupAll(scene)
+
     return () => {
-      cleanUpScene(scene)
-      if (scene) {
-        scene.userData.element.innerHTML = ''
-      }
+      cleanaupAll(scene)
     }
   }, [scene])
 

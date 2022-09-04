@@ -21,16 +21,19 @@ import { clock } from './Canvas'
 const count = 70
 const width = 50
 
+const geometry = new PlaneGeometry(width, width, count, count)
+const normalMap = new TextureLoader().load(normalUrl)
+const alphaMap = new TextureLoader().load(alphaUrl)
+const displacementMap = new TextureLoader().load(displacementUrl)
+
 export default function Terrain2({ scene }: { scene: Scene }) {
   useEffect(() => {
+    if (!scene) return
+    let mounted = true
     const camera = scene.userData.camera
     // const fog = new Fog('#00ff00')
     // scene.fog = fog
     const mesh = new Mesh()
-    const geometry = new PlaneGeometry(width, width, count, count)
-    const normalMap = new TextureLoader().load(normalUrl)
-    const alphaMap = new TextureLoader().load(alphaUrl)
-    const displacementMap = new TextureLoader().load(displacementUrl)
 
     normalMap.wrapS = RepeatWrapping
     normalMap.wrapT = RepeatWrapping
@@ -83,15 +86,20 @@ export default function Terrain2({ scene }: { scene: Scene }) {
     // camera.position.y = 8
     const render = () => {}
     const animate = () => {
-      render()
+      if (mounted) {
+        render()
 
-      if (mesh.rotation.z > 2 * Math.PI) {
-        mesh.rotation.z = 0
+        if (mesh.rotation.z > 2 * Math.PI) {
+          mesh.rotation.z = 0
+        }
+        mesh.rotation.z = clock.getElapsedTime() / 8
+        requestAnimationFrame(animate)
       }
-      mesh.rotation.z = clock.getElapsedTime() / 8
-      requestAnimationFrame(animate)
     }
     animate()
+    return () => {
+      mounted = false
+    }
   }, [scene])
 
   return <BaseSceneBlock scene={scene}></BaseSceneBlock>

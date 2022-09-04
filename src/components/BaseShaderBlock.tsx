@@ -1,10 +1,9 @@
 import { useEffect } from 'react'
 import { Scene, Shader } from 'three'
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass'
-
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer'
 import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass'
-import { cleanUpComposer } from '../utils/cleanUpComposer'
+import { cleanaupAll } from '../utils/cleanupAll'
 
 export default function BaseShaderBlock({
   scene,
@@ -15,9 +14,8 @@ export default function BaseShaderBlock({
 }) {
   useEffect(() => {
     if (scene) {
-      cleanUpComposer(scene?.userData.composer)
+      cleanaupAll(scene)
       const composer: EffectComposer = scene.userData.composer
-      composer.passes.length = 0
       const renderPass = new RenderPass(scene, scene.userData.camera)
       composer.addPass(renderPass)
       const shaderPass = new ShaderPass(shader)
@@ -25,10 +23,7 @@ export default function BaseShaderBlock({
       composer.addPass(shaderPass)
     }
     return () => {
-      cleanUpComposer(scene?.userData.composer)
-      if (scene) {
-        scene.userData.element.innerHTML = ''
-      }
+      cleanaupAll(scene)
     }
   }, [scene, shader])
 

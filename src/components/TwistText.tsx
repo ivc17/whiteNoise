@@ -15,6 +15,8 @@ var str = `white_NOIOSE | white_Noise | white_Noise | White_Noise`
 
 export default function TwistText({ scene }: { scene: Scene }) {
   useEffect(() => {
+    if (!scene) return
+    let mounted = true
     scene.add(new AmbientLight(0xcccccc))
     const material = new MeshBasicMaterial()
 
@@ -52,8 +54,10 @@ export default function TwistText({ scene }: { scene: Scene }) {
     }
 
     function animate() {
-      requestAnimationFrame(animate)
-      render()
+      if (mounted) {
+        requestAnimationFrame(animate)
+        render()
+      }
     }
 
     function render() {
@@ -68,6 +72,9 @@ export default function TwistText({ scene }: { scene: Scene }) {
     }
 
     animate()
+    return () => {
+      mounted = false
+    }
   }, [scene])
 
   return <BaseSceneBlock scene={scene}></BaseSceneBlock>

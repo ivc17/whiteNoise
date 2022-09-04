@@ -16,6 +16,8 @@ import { clock } from './Canvas'
 export default function Twist({ scene }: { scene: Scene }) {
   const shaderRef = useRef<any>()
   useEffect(() => {
+    if (!scene) return
+    let mounted = true
     const geometry = new CylinderGeometry(0.3, 1.5, 15, 3, 30)
     geometry.center()
 
@@ -87,11 +89,13 @@ export default function Twist({ scene }: { scene: Scene }) {
     }
 
     function animate() {
-      requestAnimationFrame(animate)
+      if (mounted) {
+        requestAnimationFrame(animate)
 
-      render()
-      if (shaderRef.current) {
-        shaderRef.current.uniforms.iTime.value = clock.getElapsedTime()
+        render()
+        if (shaderRef.current) {
+          shaderRef.current.uniforms.iTime.value = clock.getElapsedTime()
+        }
       }
     }
 
@@ -108,6 +112,9 @@ export default function Twist({ scene }: { scene: Scene }) {
     }
 
     animate()
+    return () => {
+      mounted = false
+    }
   }, [scene])
 
   return <BaseSceneBlock scene={scene}></BaseSceneBlock>

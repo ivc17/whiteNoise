@@ -24,11 +24,16 @@ import mapUrl from '../assets/marble.png'
 const count = 20
 const width = 50
 
+const map = new TextureLoader().load(mapUrl)
+map.repeat.set(2, 2)
+
 export default function TerrainMarble({ scene }: { scene: Scene }) {
   const positionsRef = useRef<BufferAttribute | InterleavedBufferAttribute>()
   const zRef = useRef<BufferAttribute | InterleavedBufferAttribute>()
 
   useEffect(() => {
+    if (!scene) return
+    let mounted = true
     const camera = scene.userData.camera
     const fog = new Fog('#ffffff')
     scene.fog = fog
@@ -36,9 +41,6 @@ export default function TerrainMarble({ scene }: { scene: Scene }) {
     const geometry = new PlaneGeometry(width, width, count, count)
     // geometry.center()
     positionsRef.current = geometry.attributes.position
-
-    const map = new TextureLoader().load(mapUrl)
-    map.repeat.set(2, 2)
 
     const terrainMaterial = new MeshPhongMaterial({
       fog: true,
@@ -130,10 +132,15 @@ export default function TerrainMarble({ scene }: { scene: Scene }) {
       camera.lookAt(mesh.position)
     }
     const animate = () => {
-      render()
-      requestAnimationFrame(animate)
+      if (mounted) {
+        render()
+        requestAnimationFrame(animate)
+      }
     }
     animate()
+    return () => {
+      mounted = false
+    }
   }, [scene])
 
   return <BaseSceneBlock scene={scene}></BaseSceneBlock>

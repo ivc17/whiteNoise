@@ -11,10 +11,10 @@ import {
   Vector3
 } from 'three'
 import * as BufferGeometryUtils from 'three/examples/jsm/utils/BufferGeometryUtils'
-import BaseSceneBlock from './BaseSceneBlock'
 import { Flow } from 'three/examples/jsm/modifiers/CurveModifier.js'
-import { GLTF, GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader'
+import { cleanaupAll } from '../utils/cleanupAll'
 const dracoLoader = new DRACOLoader()
 dracoLoader.setDecoderPath('/draco/')
 
@@ -22,11 +22,30 @@ const reflectionCube = new CubeTextureLoader()
   .setPath('./textures/')
   .load(['negz', 'negy', 'negx', 'posz', 'posy', 'posx'])
 
+let geometry: BufferGeometry
+new GLTFLoader()
+  .setDRACOLoader(dracoLoader)
+  .load('./models/wire.gltf', (model) => {
+    const wireGeometry = (model.scene.children[0] as any)
+      .geometry as BufferGeometry
+    wireGeometry.center()
+    wireGeometry.scale(0.003, 0.003, 0.003)
+    const list = []
+    for (let i = 0; i < 40; i++) {
+      list.push(wireGeometry.clone().translate(1.7 * i, 0, 0))
+    }
+    geometry = BufferGeometryUtils.mergeBufferGeometries(list)
+  })
+
 export default function BarbedWire({ scene }: { scene: Scene }) {
   useEffect(() => {
-    const camera = scene.userData.camera
+    if (!scene) return
+    let mounted = true
 
-    const init = (gltf: GLTF) => {
+    const init = () => {
+      cleanaupAll(scene)
+
+      const camera = scene.userData.camera
       const initialPoints = [
         [-3, 6, -1],
         [5, -1, 5],
@@ -50,17 +69,6 @@ export default function BarbedWire({ scene }: { scene: Scene }) {
       // )
       // scene.add(line)
 
-      const wireGeometry = (gltf.scene.children[0] as any)
-        .geometry as BufferGeometry
-      wireGeometry.center()
-      wireGeometry.scale(0.003, 0.003, 0.003)
-
-      const list = []
-      for (let i = 0; i < 60; i++) {
-        list.push(wireGeometry.clone().translate(1.7 * i, 0, 0))
-      }
-
-      const geometry = BufferGeometryUtils.mergeBufferGeometries(list)
       const mesh = new Mesh(
         geometry,
         new MeshPhysicalMaterial({
@@ -71,7 +79,6 @@ export default function BarbedWire({ scene }: { scene: Scene }) {
         })
       )
 
-      // mesh.scale.set(0.01, 0.01, 0.01)
       camera.lookAt(mesh.position)
 
       const flow = new Flow(mesh)
@@ -80,17 +87,22 @@ export default function BarbedWire({ scene }: { scene: Scene }) {
       scene.add(new AmbientLight('#ffffff'))
 
       const animate = () => {
-        flow.moveAlongCurve(0.0001)
-        requestAnimationFrame(animate)
+        if (mounted) {
+          flow.moveAlongCurve(0.0001)
+          requestAnimationFrame(animate)
+        }
       }
       animate()
     }
 
-    const loader = new GLTFLoader()
-    loader.setDRACOLoader(dracoLoader)
+    init()
 
-    loader.load('./models/wire.gltf', init)
+    return () => {
+      mounted = false
+
+      cleanaupAll(scene)
+    }
   }, [scene])
 
-  return <BaseSceneBlock scene={scene}></BaseSceneBlock>
+  return <></>
 }

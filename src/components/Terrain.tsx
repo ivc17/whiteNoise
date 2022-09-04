@@ -5,6 +5,7 @@ import {
   PlaneGeometry,
   Scene,
   ShaderMaterial,
+  Texture,
   TextureLoader
 } from 'three'
 import { TerrainShader } from '../shaders/terrain/terrainShader'
@@ -15,16 +16,20 @@ import alphaMapUrl from '../assets/alphamap.png'
 const count = 70
 const width = 180
 
+let texture: Texture
+
+new TextureLoader().load(alphaMapUrl, (tex) => {
+  texture = tex
+})
+
 export default function Terrain({ scene }: { scene: Scene }) {
   useEffect(() => {
+    if (!scene) return
+    let mounted = true
     const uniforms: any = {
       iTime: { value: 0 },
-      alphaMap: { value: undefined }
+      alphaMap: { value: texture }
     }
-
-    new TextureLoader().load(alphaMapUrl, (texture) => {
-      uniforms.alphaMap.value = texture
-    })
 
     const camera = scene.userData.camera
     const geometry = new PlaneGeometry(width, width, count, count)
@@ -51,18 +56,23 @@ export default function Terrain({ scene }: { scene: Scene }) {
     scene.add(mesh)
 
     const animate = () => {
-      uniforms.iTime.value = clock.getElapsedTime()
-      const speed = 0.00002
-      camera.position.x =
-        camera.position.x * Math.cos(speed) +
-        camera.position.z * Math.sin(speed)
-      camera.position.z =
-        camera.position.z * Math.cos(speed) -
-        camera.position.x * Math.sin(speed)
+      if (mounted) {
+        uniforms.iTime.value = clock.getElapsedTime()
+        const speed = 0.00002
+        camera.position.x =
+          camera.position.x * Math.cos(speed) +
+          camera.position.z * Math.sin(speed)
+        camera.position.z =
+          camera.position.z * Math.cos(speed) -
+          camera.position.x * Math.sin(speed)
 
-      requestAnimationFrame(animate)
+        requestAnimationFrame(animate)
+      }
     }
     animate()
+    return () => {
+      mounted = false
+    }
   }, [scene])
 
   return <BaseSceneBlock></BaseSceneBlock>

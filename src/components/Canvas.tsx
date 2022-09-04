@@ -1,31 +1,111 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import * as THREE from 'three'
-import { Clock, Scene, WebGLRenderer } from 'three'
+import { Clock, MathUtils, Scene, WebGLRenderer } from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
-import Metal from './Metal'
-import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js'
-import Noise from './Noise'
-import PointWave from './PointWave'
-import TerrainMarble from './TerrainMarble'
-import Terrain from './Terrain'
-import Twist from './Twist'
-import TwistText from './TwistText'
-import Terrain2 from './Terrain2'
-import BarbedWire from './BarbedWire'
-import GridText from './GridText'
 
-const sceneCountH = 3
-const sceneCountV = 3
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js'
+import { screens } from '../constants'
+import { genKey } from '../utils/genKey'
+
+export const sceneCountH = 3
+export const sceneCountV = 3
 
 const rtParameters = {
   stencilBuffer: true
 }
 
+// const screensStateOn= {
+//   metal: false,
+//   noise: false,
+//   pointWav: false,
+//   terrainMarble: false,
+//   terrain: false,
+//   terrain2: false,
+//   twist: false,
+//   twistText: false,
+//   barbedWire: false,
+//   gridText: false,
+//   ascii: false
+// }
+
+const screensStateOn = [
+  //metal
+  true,
+  //noise
+  true,
+  // pointWav
+  true,
+  //terrainMarble
+  true,
+  //terrain
+  false,
+  //terrain2
+  true,
+  // twist
+  true,
+  // twistText
+  true,
+  // barbedWire
+  true,
+  // gridText
+  true,
+  //ascii
+  false
+]
+
+const defaultDisplays = [
+  screens.metal,
+  screens.noise,
+  screens.pointWav,
+  screens.terrainMarble,
+  screens.terrain2,
+  screens.gridText,
+  screens.twist,
+  screens.barbedWire,
+  screens.twistText
+]
+
 export const clock = new Clock(true)
+
+const updateFnFactory = (screenNum: number, setOnDisplay: any) => {
+  const fn = () => {
+    setTimeout(fn, MathUtils.randInt(15, 17) * 1000)
+    setOnDisplay((prev: any) => {
+      const newArr = [...prev]
+      const { key, id } = genKey(screensStateOn, false)
+      screensStateOn[prev[screenNum].id] = false
+      screensStateOn[id] = true
+      newArr[screenNum] = screens[key as keyof typeof screens]
+      return newArr
+    })
+  }
+  setTimeout(fn, MathUtils.randInt(7, 9) * 1000)
+}
 
 export default function Canvas() {
   const rendererRef = useRef<WebGLRenderer>()
   const [scenes, setScenes] = useState<Scene[]>([])
+  const [onDisplay, setOnDisplay] =
+    useState<{ id: number; component: React.FC<any> }[]>(defaultDisplays)
+
+  const updateSize = useCallback(() => {
+    const canvas = document.getElementById('c') as HTMLCanvasElement
+    canvas.width = window.innerWidth
+    canvas.height = window.innerHeight
+    const width = canvas!.clientWidth
+    const height = canvas!.clientHeight
+
+    if (canvas!.width !== width || canvas!.height !== height) {
+      rendererRef.current?.setSize(width, height, false)
+    }
+
+    const content = document.querySelectorAll('#content div')
+    const arr = Array.from(content) as HTMLDivElement[]
+    arr.map((el) => {
+      el.style.width = `${100 / sceneCountH}%`
+      el.style.height = `${100 / sceneCountV}%`
+    })
+  }, [])
 
   useEffect(() => {
     const canvas = document.getElementById('c') as HTMLCanvasElement
@@ -59,23 +139,23 @@ export default function Canvas() {
 
         const camera = new THREE.PerspectiveCamera(
           50,
-          window.innerHeight / window.innerWidth,
+          window.innerHeight / sceneCountV / (window.innerWidth / sceneCountH),
           1,
           50
         )
         camera.position.z = 10
         scene.userData.camera = camera
 
-        const controls = new OrbitControls(
-          scene.userData.camera,
-          scene.userData.element
-        )
-        controls.minDistance = 2
-        controls.maxDistance = 20
-        controls.enablePan = false
-        controls.enableRotate = true
-        controls.enableZoom = true
-        scene.userData.controls = controls
+        // const controls = new OrbitControls(
+        //   scene.userData.camera,
+        //   scene.userData.element
+        // )
+        // controls.minDistance = 2
+        // controls.maxDistance = 20
+        // controls.enablePan = false
+        // controls.enableRotate = true
+        // controls.enableZoom = true
+        // scene.userData.controls = controls
 
         const composer = new EffectComposer(
           renderer,
@@ -89,27 +169,25 @@ export default function Canvas() {
         scene.background = new THREE.Color('#ffffff')
         sceneTemp.push(scene)
       }
-      setScenes([...sceneTemp])
+      setScenes(sceneTemp)
       renderer.setPixelRatio(window.devicePixelRatio)
       clock.start()
     }
 
     init()
-  }, [])
+    updateSize()
 
-  const updateSize = useCallback(() => {
-    const canvas = document.getElementById('c') as HTMLCanvasElement
-    const width = canvas!.clientWidth
-    const height = canvas!.clientHeight
-
-    if (canvas!.width !== width || canvas!.height !== height) {
-      rendererRef.current?.setSize(width, height, false)
+    Array.from(Array(sceneCountH * sceneCountV).keys()).map((_, idx) => {
+      updateFnFactory(idx, setOnDisplay)
+    })
+    window.addEventListener('resize', updateSize)
+    return () => {
+      window.removeEventListener('resize', updateSize)
     }
-  }, [])
+  }, [updateSize])
 
   const render = useCallback(() => {
     const canvas = document.getElementById('c') as HTMLCanvasElement
-    updateSize()
 
     if (!rendererRef.current) return
     const renderer = rendererRef.current
@@ -173,7 +251,7 @@ export default function Canvas() {
       }
       scene.userData.composer.render()
     })
-  }, [scenes, updateSize])
+  }, [scenes])
 
   const animate = useCallback(() => {
     render()
@@ -188,16 +266,17 @@ export default function Canvas() {
     <>
       <canvas id="c" />
       <div id="content" />
-      {/* {scenes[0] && <Metal scene={scenes[0]} />} */}
-      {scenes[1] && <Noise scene={scenes[1]} />}
-      {scenes[2] && <PointWave scene={scenes[2]} />}
-      {scenes[3] && <TerrainMarble scene={scenes[3]} />}
-      {scenes[4] && <Terrain scene={scenes[4]} />}
-      {scenes[5] && <Twist scene={scenes[5]} />}
-      {scenes[6] && <TwistText scene={scenes[6]} />}
-      {scenes[7] && <Terrain2 scene={scenes[7]} />}
-      {scenes[8] && <BarbedWire scene={scenes[8]} />}
-      {scenes[0] && <GridText scene={scenes[0]} />}
+      {onDisplay.map(({ component }, idx) => {
+        const Content = component as any
+
+        return (
+          <Content
+            scene={scenes[idx]}
+            key={idx}
+            renderer={rendererRef.current}
+          />
+        )
+      })}
       {/*kinetic typography,ascii rose, deck,infoglitch,Butterfly,GhoseMouse,Fractal,BlackPlanet,,particle/snow,cloud,glitch,matric rain ,mosaic,lightning(flash)*/}
     </>
   )

@@ -53,6 +53,7 @@ export default function PointWave({ scene }: { scene?: Scene }) {
   }, [graph, scene])
 
   useEffect(() => {
+    let mounted = true
     const render = () => {
       const positionsAttr = positionsRef.current
       if (!positionsAttr) return
@@ -69,11 +70,15 @@ export default function PointWave({ scene }: { scene?: Scene }) {
       positionsAttr.needsUpdate = true
     }
     const animate = () => {
-      requestAnimationFrame(animate)
-
-      render()
+      if (mounted) {
+        requestAnimationFrame(animate)
+        render()
+      }
     }
     animate()
+    return () => {
+      mounted = false
+    }
   }, [graph])
 
   return <BaseSceneBlock scene={scene}></BaseSceneBlock>

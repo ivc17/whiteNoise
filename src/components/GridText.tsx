@@ -1,15 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import {
-  BoxGeometry,
-  CanvasTexture,
-  Color,
-  Mesh,
-  MeshBasicMaterial,
-  RepeatWrapping,
-  Scene,
-  Texture,
-  UVMapping
-} from 'three'
+import { CanvasTexture, RepeatWrapping, Scene, Texture, UVMapping } from 'three'
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer'
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass'
 import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass'
@@ -77,13 +67,5 @@ export default function GridText({ scene }: { scene: Scene }) {
     }
   }, [uTexture])
 
-  useEffect(() => {
-    const geometry = new BoxGeometry(1, 1, 1)
-    geometry.center()
-    const material = new MeshBasicMaterial({ color: new Color(0x00ffff) })
-    const mesh = new Mesh(geometry, material)
-    scene.add(mesh)
-  })
-
-  return <BaseSceneBlock></BaseSceneBlock>
+  return <BaseSceneBlock scene={scene}></BaseSceneBlock>
 }
