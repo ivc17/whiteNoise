@@ -12,6 +12,7 @@ import Twist from './Twist'
 import TwistText from './TwistText'
 import Terrain2 from './Terrain2'
 import BarbedWire from './BarbedWire'
+import GridText from './GridText'
 
 const sceneCountH = 3
 const sceneCountV = 3
@@ -187,7 +188,7 @@ export default function Canvas() {
     <>
       <canvas id="c" />
       <div id="content" />
-      {scenes[0] && <Metal scene={scenes[0]} />}
+      {/* {scenes[0] && <Metal scene={scenes[0]} />} */}
       {scenes[1] && <Noise scene={scenes[1]} />}
       {scenes[2] && <PointWave scene={scenes[2]} />}
       {scenes[3] && <TerrainMarble scene={scenes[3]} />}
@@ -196,6 +197,8 @@ export default function Canvas() {
       {scenes[6] && <TwistText scene={scenes[6]} />}
       {scenes[7] && <Terrain2 scene={scenes[7]} />}
       {scenes[8] && <BarbedWire scene={scenes[8]} />}
+      {scenes[0] && <GridText scene={scenes[0]} />}
+      {/*kinetic typography,ascii rose, deck,infoglitch,Butterfly,GhoseMouse,Fractal,BlackPlanet,,particle/snow,cloud,glitch,matric rain ,mosaic,lightning(flash)*/}
     </>
   )
 }
