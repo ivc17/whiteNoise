@@ -1,0 +1,22 @@
+{
+  "files": {
+    "main.css": "/whiteNoise/static/css/main.87d24900.css",
+    "main.js": "/whiteNoise/static/js/main.08eb939e.js",
+    "static/js/529.095c3631.chunk.js": "/whiteNoise/static/js/529.095c3631.chunk.js",
+    "static/media/marble.png": "/whiteNoise/static/media/marble.503bb7616c4a593edc53.png",
+    "static/media/displacement.png": "/whiteNoise/static/media/displacement.997f4f5ad1883d10f0b2.png",
+    "static/media/normalmap.jpeg": "/whiteNoise/static/media/normalmap.c4bbe36bdc12c9569b19.jpeg",
+    "static/media/alphamap.png": "/whiteNoise/static/media/alphamap.c268b9f8de2e7aedea6f.png",
+    "static/media/Orbitron-Black.fnt": "/whiteNoise/static/media/Orbitron-Black.c5354f45e1a785acd2bb.fnt",
+    "static/media/warning.png": "/whiteNoise/static/media/warning.4ddf7e38b3d9308b9317.png",
+    "static/media/icon.svg": "/whiteNoise/static/media/icon.df36b393c5aec177ad5d92e5cf9a15e0.svg",
+    "index.html": "/whiteNoise/index.html",
+    "main.87d24900.css.map": "/whiteNoise/static/css/main.87d24900.css.map",
+    "main.08eb939e.js.map": "/whiteNoise/static/js/main.08eb939e.js.map",
+    "529.095c3631.chunk.js.map": "/whiteNoise/static/js/529.095c3631.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.87d24900.css",
+    "static/js/main.08eb939e.js"
+  ]
+}
