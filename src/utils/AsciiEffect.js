@@ -136,8 +136,9 @@ class AsciiEffect {
 
 		let fLetterSpacing = 0;
 
-		if (strResolution == 'low') {
+		if (strResolution === 'low') {
 
+			// eslint-disable-next-line default-case
 			switch (iScale) {
 
 				case 1: fLetterSpacing = - 1; break;
@@ -150,8 +151,10 @@ class AsciiEffect {
 
 		}
 
+		// eslint-disable-next-line eqeqeq
 		if (strResolution == 'medium') {
 
+			// eslint-disable-next-line default-case
 			switch (iScale) {
 
 				case 1: fLetterSpacing = 0; break;
@@ -164,8 +167,10 @@ class AsciiEffect {
 
 		}
 
+		// eslint-disable-next-line eqeqeq
 		if (strResolution == 'high') {
 
+			// eslint-disable-next-line default-case
 			switch (iScale) {
 
 				case 1:
@@ -212,6 +217,7 @@ class AsciiEffect {
 					fBrightness = (0.3 * iRed + 0.59 * iGreen + 0.11 * iBlue) / 255;
 					// fBrightness = (0.3*iRed + 0.5*iGreen + 0.3*iBlue) / 255;
 
+					// eslint-disable-next-line eqeqeq
 					if (iAlpha == 0) {
 
 						// should calculate alpha instead, but quick hack :)
@@ -234,6 +240,7 @@ class AsciiEffect {
 
 					let strThisChar = aCharList[iCharIdx];
 
+					// eslint-disable-next-line eqeqeq
 					if (strThisChar === undefined || strThisChar == ' ')
 						strThisChar = '&nbsp;';
 

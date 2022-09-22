@@ -111,7 +111,7 @@ export default function Canvas() {
 
     const content = document.querySelectorAll('#content div')
     const arr = Array.from(content) as HTMLDivElement[]
-    arr.map((el) => {
+    arr.forEach((el) => {
       el.style.width = `${100 / sceneCountH}%`
       el.style.height = `${100 / sceneCountV}%`
     })
@@ -188,7 +188,7 @@ export default function Canvas() {
     }
 
     init()
-    Array.from(Array(sceneCountH * sceneCountV).keys()).map((_, idx) => {
+    Array.from(Array(sceneCountH * sceneCountV).keys()).forEach((_, idx) => {
       updateFnFactory(idx, setOnDisplay)
     })
     // updateSize()
