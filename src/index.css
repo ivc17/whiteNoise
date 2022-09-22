@@ -88,12 +88,42 @@ body {
   opacity:1
 }
 
+.icon {
+  animation: move 30s infinite;
+  animation-delay: 0s;
+  animation-direction: alternate;
+  animation-timing-function: ease-in-out;
+  cursor:pointer;
+  position: absolute;
+  z-index: 100;
+  background: #000000;
+  padding: 10px 30px;
+  transition: .5s
+}
+
+.icon:hover {
+  background: #ffffff;
+}
+.icon:hover svg {
+  fill: #000000
+}
+
+
+@media only screen and (max-width: 900px) {
+  .icon{
+    animation-duration: 20s;
+  }
+}
+
 @media only screen and (max-width: 400px) {
   .list-item.active:after {
     background-size:  80% auto;
   }
   .title{
     font-size: 50px;
+  }
+  .icon{
+    animation-duration: 10s;
   }
 }
 
@@ -196,5 +226,15 @@ body {
   }
   100% {
     opacity: 1;
+  }
+}
+
+@keyframes move {
+  0% {
+    transform:translateX(0px)
+  }
+
+  100% {
+    transform:translateX(90vw)
   }
 }
