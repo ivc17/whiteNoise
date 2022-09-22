@@ -54,7 +54,9 @@ export default function Ascii({
     domStyle.color = '#ffffff'
     domStyle.width = '100%'
     domStyle.height = '100%'
-    domStyle.transform = `translate(-${left}px, -${top}px)`
+    domStyle.transform = `translate(-${
+      left + (window.innerWidth > 400 ? 50 : 0)
+    }px, -${top}px)`
 
     element.style.overflow = 'hidden'
     element.style.backgroundColor = '#000000'

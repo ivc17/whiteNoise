@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import * as THREE from 'three'
 import { Clock, MathUtils, Scene, WebGLRenderer } from 'three'
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
+// import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js'
 import { screens } from '../constants'
@@ -54,13 +54,13 @@ const screensStateOn = [
 ]
 
 const defaultDisplays = [
-  screens.metal,
+  screens.twist,
   screens.noise,
   screens.pointWav,
   screens.terrainMarble,
   screens.terrain2,
   screens.gridText,
-  screens.twist,
+  screens.metal,
   screens.barbedWire,
   screens.twistText
 ]
@@ -120,7 +120,7 @@ export default function Canvas() {
   useEffect(() => {
     const canvas = document.getElementById('c') as HTMLCanvasElement
     const content = document.getElementById('content') as HTMLDivElement
-
+    updateSize()
     if (!canvas || !content) return
     let renderer: WebGLRenderer
     if (!rendererRef.current) {
@@ -132,12 +132,12 @@ export default function Canvas() {
       renderer = rendererRef.current
     }
     function init() {
+      updateSize()
       setScenes([])
       content.innerHTML = ''
       const sceneTemp = []
       for (let i = 0; i < sceneCountH * sceneCountV; i++) {
         const scene = new THREE.Scene()
-
         // make a list item
         const element = document.createElement('div')
         element.className = 'list-item'
@@ -188,11 +188,10 @@ export default function Canvas() {
     }
 
     init()
-    updateSize()
-
     Array.from(Array(sceneCountH * sceneCountV).keys()).map((_, idx) => {
       updateFnFactory(idx, setOnDisplay)
     })
+    // updateSize()
     window.addEventListener('resize', updateSize)
     return () => {
       window.removeEventListener('resize', updateSize)
