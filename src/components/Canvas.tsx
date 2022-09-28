@@ -38,7 +38,7 @@ const screensStateOn = [
   //terrainMarble
   true,
   //terrain
-  false,
+  true,
   //terrain2
   true,
   // twist
@@ -46,7 +46,7 @@ const screensStateOn = [
   // twistText
   true,
   // barbedWire
-  true,
+  false,
   // gridText
   true,
   //ascii
@@ -61,7 +61,7 @@ const defaultDisplays = [
   screens.terrain2,
   screens.gridText,
   screens.metal,
-  screens.barbedWire,
+  screens.terrain,
   screens.twistText
 ]
 

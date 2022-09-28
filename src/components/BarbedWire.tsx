@@ -4,7 +4,7 @@ import {
   BufferGeometry,
   CatmullRomCurve3,
   Color,
-  CubeTextureLoader,
+  // CubeTextureLoader,
   Mesh,
   MeshPhysicalMaterial,
   Scene,
@@ -15,17 +15,18 @@ import { Flow } from 'three/examples/jsm/modifiers/CurveModifier.js'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader'
 import { cleanaupAll } from '../utils/cleanupAll'
+const PATH = process.env.PUBLIC_URL
 const dracoLoader = new DRACOLoader()
-dracoLoader.setDecoderPath('/draco/')
+dracoLoader.setDecoderPath(PATH + '/draco/')
 
-const reflectionCube = new CubeTextureLoader()
-  .setPath('./textures/')
-  .load(['negz', 'negy', 'negx', 'posz', 'posy', 'posx'])
+// const reflectionCube = new CubeTextureLoader()
+//   .setPath(PATH + '/textures/')
+//   .load(['negz', 'negy', 'negx', 'posz', 'posy', 'posx'])
 
 let geometry: BufferGeometry
 new GLTFLoader()
   .setDRACOLoader(dracoLoader)
-  .load('./models/wire.gltf', (model) => {
+  .load(PATH + '/models/wire.gltf', (model) => {
     const wireGeometry = (model.scene.children[0] as any)
       .geometry as BufferGeometry
     wireGeometry.center()
@@ -74,7 +75,7 @@ export default function BarbedWire({ scene }: { scene: Scene }) {
         new MeshPhysicalMaterial({
           color: new Color(0xcccccc),
           metalness: 0.8,
-          envMap: reflectionCube,
+          // envMap: reflectionCube,
           envMapIntensity: 0.5
         })
       )
