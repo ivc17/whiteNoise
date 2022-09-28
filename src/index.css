@@ -60,7 +60,7 @@ body {
   bottom: 0;
   right: 0;
   background: url(./assets/warning.png) no-repeat;
-  background-size: auto 80%;
+  background-size: contain;
   background-position: center center;
   opacity: 0;
   pointer-events: none;
@@ -113,7 +113,7 @@ body {
   }
 }
 
-@media only screen and (max-width: 400px) {
+@media only screen and (max-width: 900px) {
   .list-item.active:after {
     background-size:  80% auto;
   }
